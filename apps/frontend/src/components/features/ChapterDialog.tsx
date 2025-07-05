@@ -19,7 +19,16 @@ import { useToast } from '@/hooks/use-toast';
 
 const chapterSchema = z.object({
   title: z.string().min(1, '章节标题不能为空').max(100, '章节标题不能超过100字符'),
-  order: z.number().min(1, '章节顺序必须大于0').optional(),
+  order: z.preprocess(
+    (val) => {
+      // Convert empty string or null to undefined
+      if (val === '' || val === null || val === undefined) return undefined;
+      // Convert string numbers to numbers
+      const num = Number(val);
+      return isNaN(num) ? undefined : num;
+    },
+    z.number().min(1, '章节顺序必须大于0').optional()
+  ),
 });
 
 type ChapterForm = z.infer<typeof chapterSchema>;
@@ -131,7 +140,7 @@ export function ChapterDialog({ open, onClose, projectId, chapter }: ChapterDial
               type="number"
               min="1"
               placeholder="留空自动排序"
-              {...register('order', { valueAsNumber: true })}
+              {...register('order')}
               className={errors.order ? 'border-destructive' : ''}
             />
             {errors.order && (
