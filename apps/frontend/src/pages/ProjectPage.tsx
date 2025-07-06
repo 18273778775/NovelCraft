@@ -12,7 +12,7 @@ import { DocumentDialog } from '@/components/features/DocumentDialog';
 import { useProject, useProjectStats } from '@/hooks/useProjects';
 import { ChapterListItem } from '@/lib/chapters-api';
 import { DocumentListItem } from '@/lib/documents-api';
-import { DocumentType } from '@novel-craft/shared';
+import { DocumentTypeValue } from '@novel-craft/shared';
 
 export function ProjectPage() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -20,7 +20,7 @@ export function ProjectPage() {
   const [isDocumentDialogOpen, setIsDocumentDialogOpen] = useState(false);
   const [editingChapter, setEditingChapter] = useState<ChapterListItem | null>(null);
   const [editingDocument, setEditingDocument] = useState<DocumentListItem | null>(null);
-  const [documentType, setDocumentType] = useState<DocumentType | undefined>();
+  const [documentType, setDocumentType] = useState<DocumentTypeValue | undefined>();
 
   const { data: project, isLoading: projectLoading } = useProject(projectId!);
   const { data: stats } = useProjectStats(projectId!);
@@ -35,7 +35,7 @@ export function ProjectPage() {
     setIsChapterDialogOpen(true);
   };
 
-  const handleCreateDocument = (type?: DocumentType) => {
+  const handleCreateDocument = (type?: DocumentTypeValue) => {
     setEditingDocument(null);
     setDocumentType(type);
     setIsDocumentDialogOpen(true);
@@ -49,7 +49,10 @@ export function ProjectPage() {
 
   const handleOpenDocument = (documentId: string) => {
     // TODO: Navigate to document editor
-    console.log('Open document:', documentId);
+    // Temporarily disabled until document editor is implemented
+    if ((import.meta as any).env?.DEV) {
+      console.log('Open document:', documentId);
+    }
   };
 
   const handleCloseChapterDialog = () => {

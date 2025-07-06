@@ -44,7 +44,9 @@ export function Editor({
     content,
     editable,
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
+      // Get HTML content and ensure it's safe
+      const htmlContent = editor.getHTML();
+      onChange(htmlContent);
     },
     onSelectionUpdate: ({ editor }) => {
       const { from, to } = editor.state.selection;

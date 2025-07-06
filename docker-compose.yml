@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  # Database
+  database:
+    image: postgres:15-alpine
+    container_name: novel-craft-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: novel_craft
+      POSTGRES_USER: novel_craft_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-novel_craft_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - novel-craft-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U novel_craft_user -d novel_craft"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Backend API
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    container_name: novel-craft-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DATABASE_URL: postgresql://novel_craft_user:${DB_PASSWORD:-novel_craft_password}@database:5432/novel_craft?schema=public
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-this-in-production-use-at-least-32-chars}
+      JWT_EXPIRES_IN: 7d
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY}
+      DEEPSEEK_API_URL: https://api.deepseek.com
+      DEEPSEEK_MODEL: deepseek-chat
+      DOUBAO_API_KEY: ${DOUBAO_API_KEY:-}
+      DOUBAO_API_URL: https://ark.cn-beijing.volces.com/api/v3
+      DOUBAO_MODEL_ID: ${DOUBAO_MODEL_ID:-}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
+      MAX_FILE_SIZE: 10485760
+      UPLOAD_DEST: ./uploads
+      THROTTLE_TTL: 60000
+      THROTTLE_LIMIT: 100
+    ports:
+      - "3001:3001"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - novel-craft-network
+    volumes:
+      - backend_uploads:/app/uploads
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3001/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:3001/api}
+        VITE_APP_NAME: "Novel Craft"
+        VITE_APP_VERSION: "1.0.0"
+    container_name: novel-craft-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - novel-craft-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+    driver: local
+  backend_uploads:
+    driver: local
+
+networks:
+  novel-craft-network:
+    driver: bridge

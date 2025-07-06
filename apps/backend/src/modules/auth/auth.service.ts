@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 import { UsersService } from '../users/users.service';
+import { User } from '@prisma/client';
 import { RegisterDto, LoginDto } from '@novel-craft/shared';
 
 @Injectable()
@@ -12,7 +13,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string, password: string): Promise<any> {
+  async validateUser(email: string, password: string): Promise<Omit<User, 'password'> | null> {
     const user = await this.usersService.findByEmail(email);
     
     if (user && await bcrypt.compare(password, user.password)) {
@@ -23,7 +24,7 @@ export class AuthService {
     return null;
   }
 
-  async login(user: any) {
+  async login(user: Omit<User, 'password'>) {
     const payload = { email: user.email, sub: user.id };
     
     return {

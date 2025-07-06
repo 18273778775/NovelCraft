@@ -18,6 +18,7 @@ import { ProjectsModule } from './modules/projects/projects.module';
 import { ChaptersModule } from './modules/chapters/chapters.module';
 import { DocumentsModule } from './modules/documents/documents.module';
 import { AiModule } from './modules/ai/ai.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { AiModule } from './modules/ai/ai.module';
     ChaptersModule,
     DocumentsModule,
     AiModule,
+    HealthModule,
   ],
   providers: [
     // Global guards

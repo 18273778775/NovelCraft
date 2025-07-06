@@ -15,11 +15,11 @@ import { DocumentListItem } from '@/lib/documents-api';
 import { useGroupedDocuments, useDeleteDocument, useCreateDefaultDocuments } from '@/hooks/useDocuments';
 import { formatDate } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
-import { DocumentType } from '@novel-craft/shared';
+import { DocumentType, DocumentTypeValue } from '@novel-craft/shared';
 
 interface DocumentListProps {
   projectId: string;
-  onCreateDocument: (type?: DocumentType) => void;
+  onCreateDocument: (type?: DocumentTypeValue) => void;
   onEditDocument: (document: DocumentListItem) => void;
   onOpenDocument: (documentId: string) => void;
 }
@@ -103,7 +103,7 @@ export function DocumentList({
   };
 
   const renderDocumentCard = (document: any) => {
-    const config = documentTypeConfig[document.type as DocumentType];
+    const config = documentTypeConfig[document.type as keyof typeof documentTypeConfig];
     const Icon = config.icon;
 
     return (

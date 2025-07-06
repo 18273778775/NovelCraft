@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { documentsApi } from '@/lib/documents-api';
-import { CreateDocumentDto, UpdateDocumentDto, DocumentType } from '@novel-craft/shared';
+import { CreateDocumentDto, UpdateDocumentDto } from '@novel-craft/shared';
 
 export function useDocuments(projectId: string, type?: DocumentType) {
   return useQuery({

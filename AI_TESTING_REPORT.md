@@ -20,12 +20,12 @@ Novel Craft AI小说润色系统的AI服务集成测试已完成。测试覆盖�
 ### API密钥配置
 ```bash
 # DeepSeek配置
-DEEPSEEK_API_KEY=sk-64f2396064214545a04cb81ed9dc0380
+DEEPSEEK_API_KEY=sk-****************************[已隐藏]
 DEEPSEEK_API_URL=https://api.deepseek.com
 DEEPSEEK_MODEL=deepseek-chat
 
 # 豆包配置
-DOUBAO_API_KEY=2836e8fe-8f55-4eb9-9b68-bfca206e678e
+DOUBAO_API_KEY=****-****-****-****-************[已隐藏]
 DOUBAO_API_URL=https://ark.cn-beijing.volces.com/api/v3
 DOUBAO_MODEL_ID=doubao-pro-4k
 ```

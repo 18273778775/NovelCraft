@@ -17,11 +17,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { DocumentListItem } from '@/lib/documents-api';
 import { useCreateDocument, useUpdateDocument } from '@/hooks/useDocuments';
 import { useToast } from '@/hooks/use-toast';
-import { DocumentType } from '@novel-craft/shared';
+import { DocumentType, DocumentTypeValue } from '@novel-craft/shared';
 
 const documentSchema = z.object({
   title: z.string().min(1, '文档标题不能为空').max(100, '文档标题不能超过100字符'),
-  type: z.nativeEnum(DocumentType),
+  type: z.enum(['OUTLINE', 'CHARACTERS', 'WORLDBUILDING', 'OTHER'] as const),
 });
 
 type DocumentForm = z.infer<typeof documentSchema>;
@@ -31,7 +31,7 @@ interface DocumentDialogProps {
   onClose: () => void;
   projectId: string;
   document?: DocumentListItem | null;
-  defaultType?: DocumentType;
+  defaultType?: DocumentTypeValue;
 }
 
 const documentTypeOptions = [
@@ -62,7 +62,7 @@ export function DocumentDialog({
     resolver: zodResolver(documentSchema),
     defaultValues: {
       title: '',
-      type: defaultType || DocumentType.OTHER,
+      type: (defaultType || DocumentType.OTHER) as DocumentForm['type'],
     },
   });
 
@@ -76,12 +76,12 @@ export function DocumentDialog({
     if (document) {
       reset({
         title: document.title,
-        type: document.type,
+        type: document.type as any,
       });
     } else {
       reset({
         title: '',
-        type: defaultType || DocumentType.OTHER,
+        type: (defaultType || DocumentType.OTHER) as DocumentForm['type'],
       });
     }
   }, [document, defaultType, reset]);
@@ -147,7 +147,7 @@ export function DocumentDialog({
             <Label htmlFor="type">文档类型</Label>
             <Select
               value={selectedType}
-              onValueChange={(value) => setValue('type', value as DocumentType)}
+              onValueChange={(value) => setValue('type', value as DocumentForm['type'])}
             >
               <SelectTrigger>
                 <SelectValue placeholder="选择文档类型" />

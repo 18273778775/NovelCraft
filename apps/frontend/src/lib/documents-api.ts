@@ -1,5 +1,5 @@
 import { api, handleApiResponse, handleApiError } from './api';
-import { CreateDocumentDto, UpdateDocumentDto, Document, DocumentType } from '@novel-craft/shared';
+import { CreateDocumentDto, UpdateDocumentDto, Document } from '@novel-craft/shared';
 
 export interface DocumentListItem {
   id: string;

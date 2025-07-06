@@ -1,5 +1,5 @@
-import { IsEmail, IsString, IsOptional, MinLength, IsEnum, IsNumber, Min } from 'class-validator';
-import { DocumentType, DocumentTypeValue } from '../types';
+import { IsEmail, IsString, IsOptional, MinLength, IsNumber, Min } from 'class-validator';
+import type { DocumentTypeValue } from '../types';
 
 // Auth DTOs
 export class RegisterDto {

@@ -48,6 +48,8 @@ Novel Craft是一个现代化的小说创作平台，集成了DeepSeek和豆包�
 ### 开发工具
 - **包管理**: pnpm + Workspace
 - **代码质量**: ESLint + Prettier
+- **容器化**: Docker + Docker Compose
+- **部署**: 自动化部署脚本
 - **测试**: Playwright E2E测试
 - **Git钩子**: Husky
 - **类型检查**: TypeScript
@@ -146,6 +148,98 @@ pnpm dev
 - **前端应用**: http://localhost:3000
 - **API文档**: http://localhost:3001/api/docs
 - **后端API**: http://localhost:3001
+
+## 🐳 Docker部署
+
+### 快速开始（推荐）
+
+1. **克隆项目**
+```bash
+git clone https://github.com/18273778775/NovelCraft.git
+cd NovelCraft
+```
+
+2. **配置环境变量**
+```bash
+cp .env.example .env
+```
+
+编辑 `.env` 文件，配置必要的环境变量：
+```env
+# 数据库密码
+DB_PASSWORD=your_secure_database_password
+
+# JWT密钥
+JWT_SECRET=your-super-secret-jwt-key-change-this-in-production-use-at-least-32-chars
+
+# AI服务配置
+DEEPSEEK_API_KEY=your-deepseek-api-key-here
+DOUBAO_API_KEY=your-doubao-api-key-here
+DOUBAO_MODEL_ID=doubao-pro-4k
+
+# CORS配置
+CORS_ORIGIN=http://localhost:3000
+
+# 前端API地址
+VITE_API_URL=http://localhost:3001/api
+```
+
+3. **一键部署**
+```bash
+./scripts/deploy.sh
+```
+
+### 开发环境部署
+```bash
+# 使用开发配置
+docker-compose up -d --build
+
+# 查看服务状态
+docker-compose ps
+
+# 查看日志
+docker-compose logs -f
+```
+
+### 生产环境部署
+```bash
+# 使用生产配置
+./scripts/deploy.sh prod
+
+# 或者手动执行
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+```
+
+### Docker服务说明
+
+| 服务 | 端口 | 说明 |
+|------|------|------|
+| frontend | 3000 | React前端应用 |
+| backend | 3001 | NestJS后端API |
+| database | 5432 | PostgreSQL数据库 |
+| nginx | 80/443 | 反向代理（仅生产环境） |
+| redis | 6379 | 缓存服务（仅生产环境） |
+
+### 常用Docker命令
+```bash
+# 查看服务状态
+docker-compose ps
+
+# 查看服务日志
+docker-compose logs -f [service_name]
+
+# 重启服务
+docker-compose restart [service_name]
+
+# 停止所有服务
+docker-compose down
+
+# 停止并删除数据卷
+docker-compose down -v
+
+# 更新服务
+docker-compose pull && docker-compose up -d
+```
 
 ## 🎯 使用指南
 

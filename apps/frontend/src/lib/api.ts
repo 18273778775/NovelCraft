@@ -1,13 +1,17 @@
 import axios, { AxiosError } from 'axios';
 import { config } from './config';
 
+// API configuration constants
+const API_TIMEOUT = 10000; // 10 seconds
+const DEFAULT_HEADERS = {
+  'Content-Type': 'application/json',
+};
+
 // Create axios instance
 export const api = axios.create({
   baseURL: config.apiUrl,
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  timeout: API_TIMEOUT,
+  headers: DEFAULT_HEADERS,
 });
 
 // Token management
@@ -47,7 +51,10 @@ api.interceptors.response.use(
 
     // Handle network errors
     if (!error.response) {
-      console.error('Network error:', error.message);
+      // Only log in development environment
+      if ((import.meta as any).env?.DEV) {
+        console.error('Network error:', error.message);
+      }
     }
 
     return Promise.reject(error);
