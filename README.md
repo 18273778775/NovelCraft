@@ -151,7 +151,9 @@ pnpm dev
 
 ## 🐳 Docker部署
 
-### 快速开始（推荐）
+> ⚠️ **注意**: Docker镜像构建目前遇到pnpm workspace依赖解析问题，推荐使用传统部署方式。详见 [DOCKER_DEPLOYMENT_GUIDE.md](DOCKER_DEPLOYMENT_GUIDE.md)
+
+### 快速开始（推荐传统部署）
 
 1. **克隆项目**
 ```bash
@@ -159,33 +161,30 @@ git clone https://github.com/18273778775/NovelCraft.git
 cd NovelCraft
 ```
 
-2. **配置环境变量**
+2. **快速环境设置**
 ```bash
+./scripts/dev.sh
+```
+
+3. **启动服务**
+```bash
+# 终端1：启动后端
+pnpm backend:dev
+
+# 终端2：启动前端
+pnpm frontend:dev
+```
+
+### Docker配置（开发中）
+
+项目包含完整的Docker配置文件，但目前构建遇到技术问题：
+
+```bash
+# 配置环境变量
 cp .env.example .env
-```
+# 编辑 .env 文件配置API密钥
 
-编辑 `.env` 文件，配置必要的环境变量：
-```env
-# 数据库密码
-DB_PASSWORD=your_secure_database_password
-
-# JWT密钥
-JWT_SECRET=your-super-secret-jwt-key-change-this-in-production-use-at-least-32-chars
-
-# AI服务配置
-DEEPSEEK_API_KEY=your-deepseek-api-key-here
-DOUBAO_API_KEY=your-doubao-api-key-here
-DOUBAO_MODEL_ID=doubao-pro-4k
-
-# CORS配置
-CORS_ORIGIN=http://localhost:3000
-
-# 前端API地址
-VITE_API_URL=http://localhost:3001/api
-```
-
-3. **一键部署**
-```bash
+# Docker部署（待修复）
 ./scripts/deploy.sh
 ```
 
