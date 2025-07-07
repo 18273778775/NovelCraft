@@ -1,8 +1,34 @@
 {
   "name": "@18273778775/novel-craft",
-  "version": "1.1.0",
-  "description": "AI-powered novel editing and polishing system",
-  "private": false,
+  "version": "1.2.0",
+  "description": "AI驱动的智能小说润色系统 - 完整可用的CLI工具包",
+  "main": "index.js",
+  "bin": {
+    "novel-craft": "./bin/novel-craft.js"
+  },
+  "files": [
+    "bin/",
+    "index.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "novel",
+    "ai",
+    "writing",
+    "editing",
+    "cli",
+    "deepseek",
+    "nestjs",
+    "react",
+    "typescript",
+    "小说",
+    "写作",
+    "润色"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
@@ -10,7 +36,10 @@
     "type": "git",
     "url": "git+https://github.com/18273778775/NovelCraft.git"
   },
-  "author": "18273778775",
+  "author": {
+    "name": "18273778775",
+    "url": "https://github.com/18273778775"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/18273778775/NovelCraft/issues"

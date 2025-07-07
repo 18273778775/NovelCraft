@@ -2,25 +2,35 @@
 
 ## 🚀 快速开始
 
-### 方式1: 使用GitHub Packages（推荐）
+### 方式1: 使用CLI工具（推荐）
 
 ```bash
-# 1. 安装Novel Craft包
-npm install @18273778775/novel-craft
-# 或使用pnpm
-pnpm add @18273778775/novel-craft
+# 1. 全局安装CLI工具
+npm install -g @18273778775/novel-craft
 
-# 2. 初始化项目
-npx @18273778775/novel-craft init
+# 2. 创建新项目
+novel-craft create my-novel-app
 
 # 3. 进入项目目录
-cd novel-craft-project
+cd my-novel-app
 
-# 4. 安装依赖
-pnpm install
+# 4. 设置环境
+novel-craft setup
 
 # 5. 启动开发服务器
-pnpm dev
+novel-craft dev
+```
+
+### 方式1b: 直接使用（无需安装）
+
+```bash
+# 1. 直接创建项目
+npx @18273778775/novel-craft create my-novel-app
+
+# 2. 进入项目并设置
+cd my-novel-app
+npx @18273778775/novel-craft setup
+npx @18273778775/novel-craft dev
 ```
 
 ### 方式2: 直接克隆仓库

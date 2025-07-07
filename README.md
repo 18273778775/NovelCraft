@@ -48,8 +48,8 @@ Novel Craft是一个现代化的小说创作平台，集成了DeepSeek和豆包�
 ### 开发工具
 - **包管理**: pnpm + Workspace
 - **代码质量**: ESLint + Prettier
-- **容器化**: Docker + Docker Compose
-- **部署**: 自动化部署脚本
+- **CLI工具**: 完整的命令行界面
+- **包发布**: GitHub Packages
 - **测试**: Playwright E2E测试
 - **Git钩子**: Husky
 - **类型检查**: TypeScript
@@ -79,22 +79,23 @@ Novel Craft/
 
 ## 🛠️ 安装和运行
 
-### 📦 方式1: 使用GitHub Packages（推荐团队使用）
+### 📦 方式1: 使用CLI工具（推荐）
 
 ```bash
-# 1. 安装Novel Craft包
-npm install @18273778775/novel-craft
+# 1. 创建新项目
+npx @18273778775/novel-craft create my-novel-app
 
-# 2. 初始化项目
-npx @18273778775/novel-craft init
+# 2. 进入项目目录
+cd my-novel-app
 
-# 3. 进入项目并启动
-cd novel-craft-project
-pnpm install
-pnpm dev
+# 3. 设置环境
+novel-craft setup
+
+# 4. 启动开发服务器
+novel-craft dev
 ```
 
-> 📚 **团队成员安装指南**: 查看 [TEAM_INSTALLATION_GUIDE.md](TEAM_INSTALLATION_GUIDE.md)
+> 🎉 **一键安装**: 无需复杂配置，直接可用！
 
 ### 🔧 方式2: 传统开发安装
 
@@ -168,96 +169,51 @@ pnpm dev
 - **API文档**: http://localhost:3001/api/docs
 - **后端API**: http://localhost:3001
 
-## 🐳 Docker部署
+## 📦 CLI工具使用
 
-> ⚠️ **注意**: Docker镜像构建目前遇到pnpm workspace依赖解析问题，推荐使用传统部署方式。详见 [DOCKER_DEPLOYMENT_GUIDE.md](DOCKER_DEPLOYMENT_GUIDE.md)
+Novel Craft 提供了完整的CLI工具，让您可以轻松创建和管理项目：
 
-### 快速开始（推荐传统部署）
-
-1. **克隆项目**
-```bash
-git clone https://github.com/18273778775/NovelCraft.git
-cd NovelCraft
-```
-
-2. **快速环境设置**
-```bash
-./scripts/dev.sh
-```
-
-3. **启动服务**
-```bash
-# 终端1：启动后端
-pnpm backend:dev
-
-# 终端2：启动前端
-pnpm frontend:dev
-```
-
-### Docker配置（开发中）
-
-项目包含完整的Docker配置文件，但目前构建遇到技术问题：
+### 全局安装（推荐）
 
 ```bash
-# 配置环境变量
-cp .env.example .env
-# 编辑 .env 文件配置API密钥
+# 全局安装CLI工具
+npm install -g @18273778775/novel-craft
 
-# Docker部署（待修复）
-./scripts/deploy.sh
+# 创建新项目
+novel-craft create my-novel-app
+
+# 进入项目
+cd my-novel-app
+
+# 设置环境
+novel-craft setup
+
+# 启动开发服务器
+novel-craft dev
 ```
 
-### 开发环境部署
+### 直接使用（无需安装）
+
 ```bash
-# 使用开发配置
-docker-compose up -d --build
+# 直接创建项目
+npx @18273778775/novel-craft create my-novel-app
 
-# 查看服务状态
-docker-compose ps
-
-# 查看日志
-docker-compose logs -f
+# 进入项目并设置
+cd my-novel-app
+npx @18273778775/novel-craft setup
+npx @18273778775/novel-craft dev
 ```
 
-### 生产环境部署
-```bash
-# 使用生产配置
-./scripts/deploy.sh prod
+### CLI命令说明
 
-# 或者手动执行
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
-```
+- `novel-craft create <项目名>` - 创建新的Novel Craft项目
+- `novel-craft setup` - 安装依赖并设置数据库
+- `novel-craft dev` - 启动开发服务器
+- `novel-craft build` - 构建项目
+- `novel-craft start` - 启动生产服务器
+- `novel-craft --help` - 显示帮助信息
 
-### Docker服务说明
 
-| 服务 | 端口 | 说明 |
-|------|------|------|
-| frontend | 3000 | React前端应用 |
-| backend | 3001 | NestJS后端API |
-| database | 5432 | PostgreSQL数据库 |
-| nginx | 80/443 | 反向代理（仅生产环境） |
-| redis | 6379 | 缓存服务（仅生产环境） |
-
-### 常用Docker命令
-```bash
-# 查看服务状态
-docker-compose ps
-
-# 查看服务日志
-docker-compose logs -f [service_name]
-
-# 重启服务
-docker-compose restart [service_name]
-
-# 停止所有服务
-docker-compose down
-
-# 停止并删除数据卷
-docker-compose down -v
-
-# 更新服务
-docker-compose pull && docker-compose up -d
-```
 
 ## 🎯 使用指南
 
