@@ -1,7 +1,16 @@
 {
-  "name": "@novel-craft/shared",
-  "version": "1.0.0",
+  "name": "@18273778775/novel-craft-shared",
+  "version": "1.1.0",
   "description": "Shared types and utilities for Novel Craft",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/18273778775/NovelCraft.git"
+  },
+  "author": "18273778775",
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

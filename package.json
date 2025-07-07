@@ -1,8 +1,21 @@
 {
-  "name": "novel-craft",
-  "version": "1.0.0",
+  "name": "@18273778775/novel-craft",
+  "version": "1.1.0",
   "description": "AI-powered novel editing and polishing system",
-  "private": true,
+  "private": false,
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/18273778775/NovelCraft.git"
+  },
+  "author": "18273778775",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/18273778775/NovelCraft/issues"
+  },
+  "homepage": "https://github.com/18273778775/NovelCraft#readme",
   "workspaces": [
     "packages/*",
     "apps/*"

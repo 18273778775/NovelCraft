@@ -79,7 +79,26 @@ Novel Craft/
 
 ## 🛠️ 安装和运行
 
-### 环境要求
+### 📦 方式1: 使用GitHub Packages（推荐团队使用）
+
+```bash
+# 1. 安装Novel Craft包
+npm install @18273778775/novel-craft
+
+# 2. 初始化项目
+npx @18273778775/novel-craft init
+
+# 3. 进入项目并启动
+cd novel-craft-project
+pnpm install
+pnpm dev
+```
+
+> 📚 **团队成员安装指南**: 查看 [TEAM_INSTALLATION_GUIDE.md](TEAM_INSTALLATION_GUIDE.md)
+
+### 🔧 方式2: 传统开发安装
+
+#### 环境要求
 - Node.js 18+
 - pnpm 8+
 - Git

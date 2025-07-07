@@ -1,0 +1,125 @@
+name: Publish to GitHub Packages
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish'
+        required: true
+        default: '1.1.0'
+
+env:
+  NODE_VERSION: '18'
+  PNPM_VERSION: '8'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        registry-url: 'https://npm.pkg.github.com'
+        scope: '@18273778775'
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: ${{ env.PNPM_VERSION }}
+
+    - name: Get pnpm store directory
+      shell: bash
+      run: |
+        echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+    - name: Setup pnpm cache
+      uses: actions/cache@v3
+      with:
+        path: ${{ env.STORE_PATH }}
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
+
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+
+    - name: Build shared package
+      run: pnpm --filter shared build
+
+    - name: Update package versions
+      run: |
+        # Update shared package version
+        cd packages/shared
+        npm version ${{ github.event.inputs.version || github.event.release.tag_name }} --no-git-tag-version
+        cd ../..
+        
+        # Update main package version
+        npm version ${{ github.event.inputs.version || github.event.release.tag_name }} --no-git-tag-version
+
+    - name: Publish shared package
+      run: |
+        cd packages/shared
+        npm publish
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create publishable main package
+      run: |
+        # Create CLI entry point
+        mkdir -p bin
+        cat > bin/novel-craft.js << 'EOF'
+        #!/usr/bin/env node
+        const { execSync } = require('child_process');
+        
+        console.log('🎨 Novel Craft - AI-powered Novel Editing System');
+        
+        const command = process.argv[2];
+        
+        switch (command) {
+          case 'init':
+            console.log('📁 Initializing Novel Craft project...');
+            execSync('git clone https://github.com/18273778775/NovelCraft.git novel-craft-project', { stdio: 'inherit' });
+            console.log('✅ Project initialized!');
+            break;
+          default:
+            console.log('Usage: novel-craft init');
+        }
+        EOF
+        
+        chmod +x bin/novel-craft.js
+        
+        # Create main entry point
+        cat > index.js << 'EOF'
+        const packageInfo = require('./package.json');
+        console.log(`Novel Craft v${packageInfo.version}`);
+        module.exports = { version: packageInfo.version };
+        EOF
+
+    - name: Publish main package
+      run: npm publish
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create release summary
+      run: |
+        echo "## 📦 Published Packages" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- \`@18273778775/novel-craft-shared@${{ github.event.inputs.version || github.event.release.tag_name }}\`" >> $GITHUB_STEP_SUMMARY
+        echo "- \`@18273778775/novel-craft@${{ github.event.inputs.version || github.event.release.tag_name }}\`" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "## 🚀 Installation" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+        echo "npm install @18273778775/novel-craft" >> $GITHUB_STEP_SUMMARY
+        echo "npx @18273778775/novel-craft init" >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
