@@ -1,5 +1,5 @@
-# Multi-stage build for React frontend
-FROM node:18-alpine AS base
+# Build stage
+FROM node:18-alpine AS builder
 
 # Install pnpm
 RUN npm install -g pnpm
@@ -13,10 +13,7 @@ COPY packages/shared/package.json ./packages/shared/
 COPY apps/frontend/package.json ./apps/frontend/
 
 # Install dependencies
-RUN pnpm install --frozen-lockfile
-
-# Build stage
-FROM base AS builder
+RUN pnpm install --force
 
 # Copy source code
 COPY packages/shared ./packages/shared
@@ -38,23 +35,13 @@ ENV VITE_APP_VERSION=$VITE_APP_VERSION
 RUN pnpm --filter frontend build
 
 # Production stage with Nginx
-FROM nginx:alpine AS production
+FROM nginx:alpine
 
 # Copy custom nginx config
 COPY apps/frontend/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy built application
 COPY --from=builder /app/apps/frontend/dist /usr/share/nginx/html
-
-# Add non-root user
-RUN addgroup -g 1001 -S nginx-group
-RUN adduser -S nginx-user -u 1001 -G nginx-group
-
-# Change ownership of nginx directories
-RUN chown -R nginx-user:nginx-group /var/cache/nginx /var/run /var/log/nginx /usr/share/nginx/html
-
-# Switch to non-root user
-USER nginx-user
 
 # Expose port
 EXPOSE 3000
